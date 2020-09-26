@@ -5,7 +5,7 @@
 /************************* BIBLIOTECAS *******************************/
 #include <iostream>
 #include <stdlib.h>
-#include <conio.h>
+//#include <conio.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
@@ -29,6 +29,7 @@
 using namespace std;
 
 double BETA = MI;                     // Fator de ajuste das correcoes
+void gotoxy(int x, int y);            // Implementando gotoxy() manualmente
 
 /************************* CLASSES **********************************/
 /*********************** CLASSE NEURONIO ****************************/
@@ -445,6 +446,11 @@ void Rede :: Treinar()
 }
 
 /****************** PROGRAMA PRINCIPAL *****************************/
+void gotoxy(int x,int y)
+{
+    printf("%c[%d;%df",0x1B,y,x);
+}
+
 int main()
 {
   int Numero_Camadas;                 // N�mero de camadas da rede
