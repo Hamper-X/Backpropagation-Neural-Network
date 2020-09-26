@@ -8,6 +8,7 @@
 #include <conio.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 /************************* DEFINICOES ********************************/
 #define MAXCAM          5              // N�mero m�ximo de camadas
@@ -50,17 +51,15 @@ class Neuronio
 *********************************************************/
 void Neuronio :: Inicializar_Neuronio(int Numero_Pesos)
 {
-  int i;
+  int i, p, q;
 
   this -> Numero_Pesos = Numero_Pesos;
 
+  srand(time(NULL));
   for (i=0;i < Numero_Pesos;i++)
-  {
-    srand(100);
-    int p = rand()%11/10.0;
-
-    srand(100);
-    int q = rand()%11 - 1;
+  {    
+    p = rand()%11/10.0;
+    q = rand()%11 - 1;
     W[i] = (double)(p*q);
 
   }    
@@ -323,6 +322,7 @@ void Rede :: Calcular_Resultado(double Entrada[], double Saida[])
 void Rede :: Treinar()
 {
   int i, j, Linha_Escolhida, Iteracoes, Camada_Saida, Marcados[MAXLIN];
+  int p, q; 
   double Vetor_Saida[MAXNEU], Erros[MAXNEU], Somatorio_Erro, Maior;
   long Contador, Dinamico;
   char Sair;
@@ -340,7 +340,7 @@ void Rede :: Treinar()
 
   do
   {
-    srand(NUMLIN);
+    srand(time(NULL));
     Linha_Escolhida = rand()%NUMLIN;
 
     j = 0;
@@ -415,15 +415,14 @@ void Rede :: Treinar()
     else
       Iteracoes = 0;
 
+    srand(time(NULL));
+
     /* Beta din�mico */
     if(Dinamico == 200000)
     {
       Dinamico = 0;
-      srand(100);
-      int p = rand()%6;
-
-      srand(100);
-      int q = rand()%3;
+      p = rand()%6;
+      q = rand()%3;
       BETA += (p/10.0)*(q - 1);
     }
 
