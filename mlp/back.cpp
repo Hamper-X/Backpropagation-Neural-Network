@@ -5,10 +5,20 @@
 /************************* BIBLIOTECAS *******************************/
 #include <iostream>
 #include <stdlib.h>
-//#include <conio.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+
+// Caso o SO seja windows
+#if defined(__MINGW32__) || defined(_MSC_VER) || defined(_WIN32) || defined(WIN32)
+#define limpar_input() fflush(stdin)
+#define limpar_tela() system("cls")
+#include <windows.h>
+// Caso o SO seja Linux
+#else
+#define limpar_input() __fpurge(stdin)
+#define limpar_tela() system("clear")
+#endif
 
 /************************* DEFINICOES ********************************/
 #define MAXCAM          5              // N�mero m�ximo de camadas
@@ -472,7 +482,7 @@ int main()
 
   while(Continua != 'n')
   {
-    clrscr();
+    limpar_tela();
 
     if(Continua == 'r')
     {
