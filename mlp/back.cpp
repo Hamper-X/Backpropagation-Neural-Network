@@ -349,7 +349,7 @@ void Rede ::Treinar()
   Camada_Saida = Numero_Camadas - 1;
 
   do
-  {    
+  {
     Linha_Escolhida = rand() % NUMLIN;
 
     j = 0;
@@ -445,10 +445,16 @@ void Rede ::Treinar()
     }
 
     /* Op��o de escape */
-    //    if(Contador%10000000 == 0)
-    //      Sair = (char)getch();
+    if (Contador % 10000000 == 0)
+    {
+      cout << "\nRede treinada!" << endl;
+	  cout << "Pressione 'y' para sair do treinamento ou qualquer outro botão para continuar. " << endl; 
+	  cin.clear();
+	  cin.ignore(256, '\n');	  
+      Sair = cin.get();
+    }
 
-  } while (Iteracoes < NUMITE && Sair != ESC);
+  } while (Iteracoes < NUMITE && Sair != 'y');
 }
 
 /****************** PROGRAMA PRINCIPAL *****************************/
