@@ -453,6 +453,8 @@ void Rede ::Treinar()
 	  cin.clear();
 	  cin.ignore(256, '\n');	  
       Sair = cin.get();
+      limpar_tela();
+      gotoxy(1, 10);
     }
 
   } while (Iteracoes < NUMITE && Sair != 'y');
