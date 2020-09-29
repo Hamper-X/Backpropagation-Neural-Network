@@ -67,6 +67,7 @@ void Neuronio ::Inicializar_Neuronio(int Numero_Pesos)
   this->Numero_Pesos = Numero_Pesos;
 
   srand(time(NULL));
+  #pragma omp parallel for private(i) 
   for (i = 0; i < Numero_Pesos; i++)
   {
     p = rand() % 11 / 10.0;
@@ -90,10 +91,10 @@ double Neuronio ::Erro_Peso(double Erro, int Indice_Peso)
 *********************************************************/
 double Neuronio ::Somatorio(double Entrada[])
 {
-  int i;
   double Som = 0;
 
-  for (i = 0; i < Numero_Pesos; i++)
+  #pragma omp parallel for reduction(+:Som)
+  for (int i = 0; i < Numero_Pesos; i++)
     Som += Entrada[i] * W[i];
 
   return Som;
