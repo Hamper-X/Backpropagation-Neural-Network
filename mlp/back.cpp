@@ -67,7 +67,7 @@ void Neuronio ::Inicializar_Neuronio(int Numero_Pesos)
   this->Numero_Pesos = Numero_Pesos;
 
   srand(time(NULL));
-  #pragma omp parallel for private(i) 
+#pragma omp parallel for private(i)
   for (i = 0; i < Numero_Pesos; i++)
   {
     p = rand() % 11 / 10.0;
@@ -93,7 +93,8 @@ double Neuronio ::Somatorio(double Entrada[])
 {
   double Som = 0;
 
-  #pragma omp parallel for reduction(+:Som)
+#pragma omp parallel for reduction(+ \
+                                   : Som)
   for (int i = 0; i < Numero_Pesos; i++)
     Som += Entrada[i] * W[i];
 
@@ -446,13 +447,13 @@ void Rede ::Treinar()
     }
 
     /* Op��o de escape */
-    if (Contador % 10000000 == 0)
+    if (Contador % 1000000 == 0)
     {
       cout << "\nRede treinada!" << endl;
-	  cout << "Pressione 'y' para sair do treinamento ou qualquer outro botão para continuar. " << endl; 
-	  cin.clear();
-	  cin.ignore(256, '\n');	  
-      Sair = cin.get();
+      cout << "Pressione 'y' para sair do treinamento ou qualquer outro botão para continuar. " << endl;
+      // cin.clear();
+      // cin.ignore(256, '\n');
+      cin >> Sair;
       limpar_tela();
       gotoxy(1, 10);
     }
