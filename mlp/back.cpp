@@ -33,6 +33,12 @@
 #define NUMITE 1    // Numero de Iteracoes
 #define ESC 27
 
+#ifdef  test
+	#define ITERACOES 1000000
+#else
+	#define ITERACOES 100000000
+#endif
+
 #define MI 0.6
 #define TOLERANCIA 0.00001 // N�mero de erros consecutivos
 
@@ -93,7 +99,6 @@ double Neuronio ::Somatorio(double Entrada[])
 {
   double Soma = 0;
 
-  //#pragma omp parallel for reduction(+:Soma)
   for (int i = 0; i < Numero_Pesos; i++)
     Soma += Entrada[i] * W[i];
 
@@ -166,7 +171,7 @@ void Camada ::Treinar_Neuronios(double Entrada[])
 {
   int i;
 
-  #pragma omp parallel for private(i) schedule(dynamic)
+  #pragma omp parallel for private(i)
   for (i = 0; i < Numero_Neuronios; i++)
     Saida[i] = N[i].Somatorio(Entrada);
 }
@@ -243,7 +248,7 @@ void Camada ::Funcao_Ativacao()
 {
   int i;
 
-  #pragma omp parallel for private(i) schedule(dynamic)
+  #pragma omp parallel for private(i)
   for (i = 0; i < Numero_Neuronios; i++)
     Saida[i] = 1 / (1 + exp(-Saida[i]));
 }
@@ -455,7 +460,7 @@ void Rede ::Treinar()
     }
 
     /* Op��o de escape */
-    if (Contador % 10000000 == 0) //falta 1 zero
+    if (Contador % ITERACOES == 0) //falta 1 zero
     {
       cout << "\nRede treinada!" << endl;
       cout << "Pressione 'y' para sair do treinamento ou qualquer outro botão para continuar. " << endl;
@@ -531,9 +536,7 @@ int main()
       cin >> Entrada[i];
     }
 
-    // inicio = chrono::high_resolution_clock::now(); // tempo inicio
     R.Calcular_Resultado(Entrada, Saida);
-    // fim = chrono::high_resolution_clock::now(); //tempo fim
 
     for (i = 1; i <= Numero_Colunas_Saida; i++)
     {
