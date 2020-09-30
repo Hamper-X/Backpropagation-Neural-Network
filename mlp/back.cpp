@@ -67,7 +67,7 @@ void Neuronio ::Inicializar_Neuronio(int Numero_Pesos)
   this->Numero_Pesos = Numero_Pesos;
 
   srand(time(NULL));
-#pragma omp parallel for private(i)
+  #pragma omp parallel for private(i) schedule(dynamic)
   for (i = 0; i < Numero_Pesos; i++)
   {
     p = rand() % 11 / 10.0;
@@ -91,14 +91,13 @@ double Neuronio ::Erro_Peso(double Erro, int Indice_Peso)
 *********************************************************/
 double Neuronio ::Somatorio(double Entrada[])
 {
-  double Som = 0;
+  double Soma = 0;
 
-#pragma omp parallel for reduction(+ \
-                                   : Som)
+  //#pragma omp parallel for reduction(+:Soma)
   for (int i = 0; i < Numero_Pesos; i++)
-    Som += Entrada[i] * W[i];
+    Soma += Entrada[i] * W[i];
 
-  return Som;
+  return Soma;
 }
 
 /*********************************************************
@@ -154,6 +153,7 @@ void Camada ::Calcular_Erro_Final(double Erros[], double Y[])
 {
   int i;
 
+  #pragma omp parallel for private(i)
   for (i = 0; i < Numero_Neuronios; i++)
     Erros[i] = (Y[i] - Saida[i]);
 }
@@ -166,6 +166,7 @@ void Camada ::Treinar_Neuronios(double Entrada[])
 {
   int i;
 
+  #pragma omp parallel for private(i) schedule(dynamic)
   for (i = 0; i < Numero_Neuronios; i++)
     Saida[i] = N[i].Somatorio(Entrada);
 }
@@ -177,7 +178,7 @@ void Camada ::Treinar_Neuronios(double Entrada[])
 void Camada ::Calcular_Erro_Camada_Saida(double Erros[], double Y[])
 {
   int i;
-
+  #pragma omp parallel for private(i) schedule(dynamic)
   for (i = 0; i < Numero_Neuronios; i++)
     Erros[i] = (Y[i] - Saida[i]) * Saida[i] * (1 - Saida[i]);
 }
@@ -190,6 +191,7 @@ void Camada ::Calcular_Erro_Camada(double Erros[])
 {
   int i;
 
+  #pragma omp parallel for private(i) schedule(dynamic)
   for (i = 0; i < Numero_Neuronios; i++)
     Erros[i] = Saida[i] * (1 - Saida[i]) * Erros[i];
 }
@@ -207,6 +209,8 @@ void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
   /* C�lculo do Somat�rio que ser� usado para o c�lculo do erro
      da camada anterior */
 
+  #pragma omp parallel for private(i, j) schedule(dynamic) reduction (+:Temp)  
+  //#pragma omp parallel for private(i, j) schedule(dynamic)
   for (i = 1; i < Numero_Pesos; i++)
   {
     Temp = 0;
@@ -239,6 +243,7 @@ void Camada ::Funcao_Ativacao()
 {
   int i;
 
+  #pragma omp parallel for private(i) schedule(dynamic)
   for (i = 0; i < Numero_Neuronios; i++)
     Saida[i] = 1 / (1 + exp(-Saida[i]));
 }
@@ -251,6 +256,7 @@ void Camada ::Retornar_Saida(double Linha[])
   int i;
 
   Linha[0] = 1;
+  #pragma omp parallel for private(i)
   for (i = 1; i <= Numero_Neuronios; i++)
     Linha[i] = Saida[i - 1];
 }
@@ -340,6 +346,7 @@ void Rede ::Treinar()
   char Sair;
 
   /* Inicializando vari�veis */
+  #pragma omp parallel for private(i)
   for (i = 0; i < MAXLIN; i++)
     Marcados[i] = 0;
 
@@ -355,6 +362,7 @@ void Rede ::Treinar()
     Linha_Escolhida = rand() % NUMLIN;
 
     j = 0;
+    // paralelizar
     while (Marcados[Linha_Escolhida] == 1)
     {
       Linha_Escolhida++;
@@ -372,37 +380,37 @@ void Rede ::Treinar()
     Contador++;
 
     // FEED-FORWARD
-    C[0].Treinar_Neuronios(X[Linha_Escolhida]);
-    C[0].Funcao_Ativacao();
-    C[0].Retornar_Saida(Vetor_Saida);
+    C[0].Treinar_Neuronios(X[Linha_Escolhida]); //paraleizado
+    C[0].Funcao_Ativacao(); //paraleizado
+    C[0].Retornar_Saida(Vetor_Saida); //paraleizado
 
     for (i = 1; i < Numero_Camadas; i++)
     {
-      C[i].Treinar_Neuronios(Vetor_Saida);
-      C[i].Funcao_Ativacao();
-      C[i].Retornar_Saida(Vetor_Saida);
+      C[i].Treinar_Neuronios(Vetor_Saida); //paraleizado
+      C[i].Funcao_Ativacao(); //paraleizado
+      C[i].Retornar_Saida(Vetor_Saida);//paraleizado
     }
 
     // BACK-PROPAGATION
     /* Ajustando pesos da camada de sa�da */
-    C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, Y[Linha_Escolhida]);
-    C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);
-    C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida);
+    C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, Y[Linha_Escolhida]); //paraleizado
+    C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida); //paraleizado
+    C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida); //paraleizado
 
     /* Ajustando pesos das camadas intermedi�rias */
     for (i = Camada_Saida - 1; i > 0; i--)
     {
-      C[i].Calcular_Erro_Camada(Erros);
-      C[i - 1].Retornar_Saida(Vetor_Saida);
-      C[i].Ajustar_Pesos_Neuronios(Erros, X[Linha_Escolhida]);
+      C[i].Calcular_Erro_Camada(Erros); //paraleizado
+      C[i - 1].Retornar_Saida(Vetor_Saida); //paraleizado
+      C[i].Ajustar_Pesos_Neuronios(Erros, X[Linha_Escolhida]); //paraleizado
     }
 
     /* Ajustando pesos da primeira camada */
-    C[0].Calcular_Erro_Camada(Erros);
-    C[0].Ajustar_Pesos_Neuronios(Erros, X[Linha_Escolhida]);
+    C[0].Calcular_Erro_Camada(Erros); //paraleizado
+    C[0].Ajustar_Pesos_Neuronios(Erros, X[Linha_Escolhida]); //paraleizado
 
     /* Calculando o erro global */
-    C[Camada_Saida].Calcular_Erro_Final(Erros, Y[Linha_Escolhida]);
+    C[Camada_Saida].Calcular_Erro_Final(Erros, Y[Linha_Escolhida]); //paraleizado
 
     Somatorio_Erro = 0;
     for (i = 0; i < Numero_Colunas_Saida; i++)
@@ -447,7 +455,7 @@ void Rede ::Treinar()
     }
 
     /* Op��o de escape */
-    if (Contador % 1000000 == 0)
+    if (Contador % 10000000 == 0) //falta 1 zero
     {
       cout << "\nRede treinada!" << endl;
       cout << "Pressione 'y' para sair do treinamento ou qualquer outro botão para continuar. " << endl;
@@ -475,6 +483,8 @@ int main()
   int Numero_Colunas_Saida;   // N�mero de colunas da sa�da
   int Numero_Neuronio_Camada[MAXCAM];
   int i;
+
+  time_t inicio, fim;
 
   double Entrada[MAXNEU];
   double Saida[MAXNEU];
@@ -507,7 +517,10 @@ int main()
           Numero_Colunas_Entrada,
           Numero_Colunas_Saida,
           Numero_Neuronio_Camada);
+
+      time(&inicio); // tempo inicio
       R.Treinar();
+      time(&fim); //tempo fim
     }
 
     cout << "\n\nDigite as entradas da rede:\n";
@@ -518,14 +531,20 @@ int main()
       cin >> Entrada[i];
     }
 
+    // inicio = chrono::high_resolution_clock::now(); // tempo inicio
     R.Calcular_Resultado(Entrada, Saida);
+    // fim = chrono::high_resolution_clock::now(); //tempo fim
 
     for (i = 1; i <= Numero_Colunas_Saida; i++)
     {
       cout << "\nSaida " << i << " : " << Saida[i];
     }
 
-    cout << "\n\nContinua ? (s/n/r)";
+    cout << endl;
+    double total = double(fim - inicio);
+    cout << "Tempo de execução: " << fixed << total << " segundos." << endl << endl;
+
+    cout << "\n\nContinua ? (s/n/r)" << endl;
     cin >> Continua;
   }
 
