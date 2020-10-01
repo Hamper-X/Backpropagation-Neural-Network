@@ -351,8 +351,8 @@ void Rede ::Treinar()
   char Sair;
 
   /* Inicializando vari�veis */
-  #pragma omp parallel for private(i)
-  for (i = 0; i < MAXLIN; i++)
+  #pragma omp parallel for 
+  for (int i = 0; i < MAXLIN; i++)
     Marcados[i] = 0;
 
   Dinamico = 0;
@@ -367,7 +367,6 @@ void Rede ::Treinar()
     Linha_Escolhida = rand() % NUMLIN;
 
     j = 0;
-    // paralelizar
     while (Marcados[Linha_Escolhida] == 1)
     {
       Linha_Escolhida++;
