@@ -15,8 +15,8 @@ void gerarBaseDeDados()
     int a = 0, b = 0, c = 0;
     int n = 10000;
 
-    entrada.open("Entrada.txt");
-    saida.open("Saida.txt");
+    entrada.open("../database/Entrada.txt");
+    saida.open("../database/Saida.txt");
     srand(time(NULL));
 
     for (int x = 0; x < LINHAS; x++)
