@@ -1,5 +1,5 @@
 #include "Neuronio.h"
-#include "Utils.h"
+#include "../utils/Utils.h"
 
 /*********************** CLASSE NEURONIO ****************************/
 

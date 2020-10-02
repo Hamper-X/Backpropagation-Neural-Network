@@ -3,7 +3,7 @@
 #include <math.h>
 #include <time.h>
 
-#include "constants.h"
+#include "../utils/constants.h"
 
 class Neuronio
 {
