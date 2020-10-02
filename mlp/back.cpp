@@ -4,11 +4,11 @@
 
 #include <iostream>
 
-#include "Rede.h"
-#include "Camada.h"
-#include "Neuronio.h"
-#include "constants.h"
-#include "Utils.h"
+#include "./components/Rede.h"
+#include "./components/Camada.h"
+#include "./components/Neuronio.h"
+#include "./utils/constants.h"
+#include "./utils/Utils.h"
 
 using namespace std;
 
