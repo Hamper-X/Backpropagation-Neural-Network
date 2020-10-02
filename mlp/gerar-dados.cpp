@@ -5,7 +5,7 @@
 #include <time.h>
 #include <fstream>
 
-#define LINHAS 100000
+#define LINHAS 10000
 
 using namespace std;
 
@@ -55,7 +55,7 @@ void conferir()
 
 int main()
 {
-    //gerarBaseDeDados();
-    conferir();
+    gerarBaseDeDados();
+    //conferir();
     return 0;
 }
