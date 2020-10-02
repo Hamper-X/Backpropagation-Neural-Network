@@ -299,8 +299,8 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
 	this->Numero_Colunas_Entrada = Numero_Colunas_Entrada;
 	this->Numero_Colunas_Saida = Numero_Colunas_Saida;
 
-	Entrada = fopen("X.txt", "rb");
-	Saida = fopen("Y.txt", "rb");
+	Entrada = fopen("../database/X.txt", "rb");
+	Saida = fopen("../database/Y.txt", "rb");
 
 	for (i = 0; i < Numero_Linhas; i++)
 		for (j = 0; j < Numero_Colunas_Entrada; j++)
