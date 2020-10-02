@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <fstream>
 
 // Caso o SO seja windows
 #if defined(__MINGW32__) || defined(_MSC_VER) || defined(_WIN32) || defined(WIN32)
@@ -76,8 +77,8 @@ void Neuronio ::Inicializar_Neuronio(int Numero_Pesos)
 	#pragma omp parallel for private(i) schedule(dynamic,100)
 	for (i = 0; i < Numero_Pesos; i++)
 	{
-		p = rand() % 11 / 10.0;
-		q = rand() % 3 - 1;
+		p = (rand() % 11) / 10.0;
+		q = (rand() % 3) - 1;
 		W[i] = (double)(p * q);
 	}
 }
