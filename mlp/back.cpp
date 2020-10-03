@@ -16,8 +16,8 @@ int main()
 {
 	int Numero_Camadas;         // N�mero de camadas da rede
 	int Numero_Linhas;          // N�mero de linhas de entrada
-	int Numero_Colunas_Entrada; // N�mero de colunas de entrada
-	int Numero_Colunas_Saida;   // N�mero de colunas da sa�da
+	int Numero_Linhas_Entrada; // N�mero de colunas de entrada
+	int Numero_Linhas_Saida;   // N�mero de colunas da sa�da
 	int Numero_Neuronio_Camada[MAXCAM];
 	int i;
 
@@ -31,8 +31,8 @@ int main()
 	Utils u;
 
 	Numero_Linhas = NUMLIN;
-	Numero_Colunas_Entrada = NUMCOLENT;
-	Numero_Colunas_Saida = NUMCOLSAI;
+	Numero_Linhas_Entrada = NUMCOLENT;
+	Numero_Linhas_Saida = NUMCOLSAI;
 
 	while (Continua != 'n')
 	{
@@ -52,8 +52,8 @@ int main()
 			R.Inicializar_Rede(
 					Numero_Camadas,
 					Numero_Linhas,
-					Numero_Colunas_Entrada,
-					Numero_Colunas_Saida,
+					Numero_Linhas_Entrada,
+					Numero_Linhas_Saida,
 					Numero_Neuronio_Camada);
 
 			time(&inicio); // tempo inicio
@@ -63,7 +63,7 @@ int main()
 
 		cout << "\n\nDigite as entradas da rede:\n";
 
-		for (i = 0; i < Numero_Colunas_Entrada; i++)
+		for (i = 0; i < Numero_Linhas_Entrada; i++)
 		{
 			cout << "\nEntrada " << i << " : ";
 			cin >> Entrada[i];
@@ -71,7 +71,7 @@ int main()
 
 		R.Calcular_Resultado(Entrada, Saida);
 
-		for (i = 1; i <= Numero_Colunas_Saida; i++)
+		for (i = 1; i <= Numero_Linhas_Saida; i++)
 		{
 			cout << "\nSaida " << i << " : " << Saida[i];
 		}

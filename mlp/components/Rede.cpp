@@ -18,31 +18,32 @@ Rede::Rede() {}
   leitura das entradas e sa�das da rede
  *********************************************************/
 void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
-                             int Numero_Colunas_Entrada, int Numero_Colunas_Saida, int Numero_Neuronio_Camada[])
+                             int Numero_Linhas_Entrada, int Numero_Linhas_Saida, int Numero_Neuronio_Camada[])
 {
     int i, j;
     FILE *Entrada, *Saida;
 
     this->Numero_Camadas = Numero_Camadas;
     this->Numero_Linhas = Numero_Linhas;
-    this->Numero_Colunas_Entrada = Numero_Colunas_Entrada;
-    this->Numero_Colunas_Saida = Numero_Colunas_Saida;
+    this->Numero_Linhas_Entrada = Numero_Linhas_Entrada;
+    this->Numero_Linhas_Saida = Numero_Linhas_Saida;
 
-    Entrada = fopen("../database/X.txt", "rb");
-    Saida = fopen("../database/Y.txt", "rb");
-
-    for (i = 0; i < Numero_Linhas; i++)
-        for (j = 0; j < Numero_Colunas_Entrada; j++)
-            fread(&X[i][j], sizeof(double), 1, Entrada);
+    Entrada = fopen("../database/Entrada.txt", "rb");
+    Saida = fopen("../database/Saida.txt", "rb");
 
     for (i = 0; i < Numero_Linhas; i++)
-        for (j = 0; j < Numero_Colunas_Saida; j++)
-            fread(&Y[i][j], sizeof(double), 1, Saida);
+    {
+        fread(&entrada[i].first, sizeof(double), 1, Entrada);
+        fread(&entrada[i].second, sizeof(double), 1, Entrada);
+    }
+
+    for (i = 0; i < Numero_Linhas; i++)
+        fread(&saida[i], sizeof(double), 1, Saida);
 
     fclose(Entrada);
     fclose(Saida);
 
-    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Colunas_Entrada);
+    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Linhas_Entrada);
 
     for (i = 1; i < Numero_Camadas; i++)
         C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
@@ -145,7 +146,7 @@ void Rede ::Treinar()
         C[Camada_Saida].Calcular_Erro_Final(Erros, Y[Linha_Escolhida]); //paraleizado
 
         Somatorio_Erro = 0;
-        for (i = 0; i < Numero_Colunas_Saida; i++)
+        for (i = 0; i < Numero_Linhas_Saida; i++)
             Somatorio_Erro += pow(Erros[i], 2);
 
         Somatorio_Erro /= 2;

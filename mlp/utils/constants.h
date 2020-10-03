@@ -18,6 +18,8 @@
 #define MAXLIN 100 // N�mero m�ximo de linhas
 #define MAXCOL 20  // N�mero m�ximo de colunas
 
+#define MAXIN  1000 // Numero maximo de entradas
+
 #define NUMLIN 26   // N�mero de Linhas da Matriz de Entrada
 #define NUMCOLENT 8 // N�mero de Colunas da Matriz de Entrada
 #define NUMCOLSAI 5 // N�mero de Colunas de Saida
