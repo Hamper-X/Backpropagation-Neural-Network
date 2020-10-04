@@ -20,7 +20,7 @@ Rede::Rede() {}
 void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
                              int Numero_Linhas_Entrada, int Numero_Linhas_Saida, int Numero_Neuronio_Camada[])
 {
-    int i, j;
+    int i, j, a, b;
     FILE *Entrada, *Saida;
 
     this->Numero_Camadas = Numero_Camadas;
@@ -32,19 +32,26 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
     Saida = fopen("../database/Saida.txt", "rb");
 
     for (i = 0; i < Numero_Linhas; i++)
-    {
-        fread(&entrada[i].first, sizeof(double), 1, Entrada);
-        fread(&entrada[i].second, sizeof(double), 1, Entrada);
+    {        
+
+        fread(&a, sizeof(double), 1, Entrada);
+        fread(&b, sizeof(double), 1, Entrada);
+        entrada.push_back(make_pair(a, b));
     }
 
     for (i = 0; i < Numero_Linhas; i++)
-        fread(&saida[i], sizeof(double), 1, Saida);
+    {
+        fread(&a, sizeof(double), 1, Saida);
+        saida.push_back(a);
+    }
 
     fclose(Entrada);
     fclose(Saida);
 
+    //camada intermediária padrão
     C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Linhas_Entrada);
 
+    // Camadas intermediárias
     for (i = 1; i < Numero_Camadas; i++)
         C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
@@ -113,7 +120,7 @@ void Rede ::Treinar()
         Contador++;
 
         // FEED-FORWARD
-        C[0].Treinar_Neuronios(X[Linha_Escolhida]); //paraleizado
+        C[0].Treinar_Neuronios(entrada[Linha_Escolhida]); //paraleizado
         C[0].Funcao_Ativacao();                     //paraleizado
         C[0].Retornar_Saida(Vetor_Saida);           //paraleizado
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <vector>
 
 #include "Camada.h"
 #include "../utils/constants.h"
@@ -15,8 +16,8 @@ class Rede
 
 		Camada C[MAXCAM];         // Camadas da rede
 
-		pair <double, double> entrada[MAXIN]; // vetor com os pares de entrada
-		double saida[MAXIN]; //vetor de saidas
+		vector<pair <double, double>> entrada; // vetor com os pares de entrada
+		vector<double> saida; //vetor de saidas
 		
 		double X[MAXLIN][MAXCOL]; // Matriz de entrada da rede
 		double Y[MAXLIN][MAXCOL]; // Matriz de sa�da da rede
