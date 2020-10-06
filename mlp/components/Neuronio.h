@@ -2,9 +2,11 @@
 
 #include <math.h>
 #include <time.h>
+#include <vector>
 
 #include "../utils/constants.h"
 
+using namespace std;
 class Neuronio
 {
 	private:
