@@ -21,7 +21,7 @@ private:
 public:
 	Camada();
 	void Inicializar_Camada(int Numero_Neuronios, int Numero_Pesos); // Atribui o n�mero de neur�nios
-	void Treinar_Neuronios(vector<pair<double, double>> &Entrada);	 // Treina os neur�nios com uma entrada
+	void Treinar_Neuronios(vector<pair<double, double>> Entrada);	 // Treina os neur�nios com uma entrada
 	void Funcao_Ativacao();											 // Joga sa�da linear na funcao de ativacao
 	void Retornar_Saida(double Linha[]);							 // Retorna a sa�da dos neur�nios
 	void Ajustar_Pesos_Neuronios(double Erros[], double Entrada[]);
