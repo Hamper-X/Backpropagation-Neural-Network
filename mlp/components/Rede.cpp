@@ -31,6 +31,7 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
     Entrada = fopen("../database/X.txt", "rb");
     Saida = fopen("../database/Y.txt", "rb");
 
+    #pragma omp parallel for private(i) private(j)
     for (i = 0; i < Numero_Linhas; i++)
         for (j = 0; j < Numero_Colunas_Entrada; j++)
             fread(&X[i][j], sizeof(double), 1, Entrada);
