@@ -39,7 +39,7 @@ void Camada ::Calcular_Erro_Final(double Erros[], double Y[])
   Dispara o somat�rio de um neur�nio para uma certa entrada
   armazenando a sua sa�da
  *********************************************************/
-void Camada ::Treinar_Neuronios(vector <pair <double, double>> &Entrada)
+void Camada ::Treinar_Neuronios(vector<pair<double, double>> &Entrada)
 {
 	//#pragma omp parallel for schedule(dynamic,100)
 	for (int i = 0; i < Numero_Neuronios; i++)
@@ -76,7 +76,7 @@ void Camada ::Calcular_Erro_Camada(double Erros[])
   erros da camada da frente, e retorna o som�r�rio de erros
   da pr�pria camada
  *********************************************************/
-void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
+void Camada ::Ajustar_Pesos_Neuronios(double Erros[], vector<pair<double, double>> Entrada)
 {
 	int i, j;
 	double Temp, Erro_Aux[MAXNEU];
@@ -100,8 +100,10 @@ void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
 	   da camada da frente e a sa�da da pr�pria camada */
 
 	for (i = 0; i < Numero_Neuronios; i++)
-		for (j = 0; j < Numero_Pesos; j++)
-			N[i].Ajustar_Peso(Entrada[j], Erros[i], j);
+	{
+		N[i].Ajustar_Peso(Entrada[j].first, Erros[i], 0);
+		N[i].Ajustar_Peso(Entrada[j].second, Erros[i], 1);
+	}
 
 	/* Atribui o vetor de erros calculado, para o vetor erro
 	   que ser� retornado */
@@ -130,7 +132,7 @@ void Camada ::Retornar_Saida(vector<pair<double, double>> &Linha)
 {
 	int i;
 
-	Linha.push_back(make_pair(1,1));
+	Linha.push_back(make_pair(1, 1));
 	//#pragma omp parallel for private(i)
 	for (i = 1; i <= Numero_Neuronios; i++)
 		Linha.push_back(make_pair(Saida[i - 1], Saida[i]));

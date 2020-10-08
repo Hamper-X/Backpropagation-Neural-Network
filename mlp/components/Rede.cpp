@@ -144,7 +144,7 @@ void Rede ::Treinar()
         {
             C[i].Calcular_Erro_Camada(Erros);                        //paraleizado
             C[i - 1].Retornar_Saida(Vetor_Saida);                    //paraleizado
-            C[i].Ajustar_Pesos_Neuronios(Erros, X[Linha_Escolhida]); //paraleizado
+            C[i].Ajustar_Pesos_Neuronios(Erros, entrada[Linha_Escolhida]); //paraleizado
         }
 
         /* Ajustando pesos da primeira camada */
