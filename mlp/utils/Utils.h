@@ -14,5 +14,6 @@ class Utils
         static double BETA; // Fator de ajuste das correcoes
         static void gotoxy(int x, int y);
         void gerarBaseDeDados();
+        void gerarBaseDeDados2();
         void conferir();
 };

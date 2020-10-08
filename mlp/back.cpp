@@ -33,7 +33,7 @@ int main()
 	Numero_Linhas = NUMLIN;
 	Numero_Linhas_Entrada = NUMCOLENT;
 	Numero_Linhas_Saida = NUMCOLSAI;
-
+	
 	while (Continua != 'n')
 	{
 		limpar_tela();
@@ -84,6 +84,7 @@ int main()
 		cout << "\n\nContinua ? (s/n/r)" << endl;
 		cin >> Continua;
 	}
+	
 
 	return 0;
 }
