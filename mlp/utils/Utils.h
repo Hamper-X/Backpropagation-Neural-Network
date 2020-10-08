@@ -16,4 +16,5 @@ class Utils
         void gerarBaseDeDados();
         void gerarBaseDeDados2();
         void conferir();
+        void conferir2();
 };
