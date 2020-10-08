@@ -39,11 +39,11 @@ void Camada ::Calcular_Erro_Final(double Erros[], double Y[])
   Dispara o somat�rio de um neur�nio para uma certa entrada
   armazenando a sua sa�da
  *********************************************************/
-void Camada ::Treinar_Neuronios(pair <double, double> Entrada)
+void Camada ::Treinar_Neuronios(vector <pair <double, double>> &Entrada)
 {
 	//#pragma omp parallel for schedule(dynamic,100)
 	for (int i = 0; i < Numero_Neuronios; i++)
-		Saida[i] = N[i].Somatorio(Entrada);
+		Saida[i] = N[i].Somatorio(Entrada[i]);
 }
 
 /*********************************************************
@@ -126,12 +126,12 @@ void Camada ::Funcao_Ativacao()
 /*********************************************************
   Retorna a Sa�da da Camada
  *********************************************************/
-void Camada ::Retornar_Saida(double Linha[])
+void Camada ::Retornar_Saida(vector<pair<double, double>> &Linha)
 {
 	int i;
 
-	Linha[0] = 1;
+	Linha.push_back(make_pair(1,1));
 	//#pragma omp parallel for private(i)
 	for (i = 1; i <= Numero_Neuronios; i++)
-		Linha[i] = Saida[i - 1];
+		Linha.push_back(make_pair(Saida[i - 1], Saida[i]));
 }

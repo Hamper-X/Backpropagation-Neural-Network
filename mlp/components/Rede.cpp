@@ -82,7 +82,8 @@ void Rede ::Treinar()
 {
     int i, j, Linha_Escolhida, Iteracoes, Camada_Saida, Marcados[MAXLIN];
     int p, q;
-    double Vetor_Saida[MAXNEU], Erros[MAXNEU], Somatorio_Erro, Maior;
+    vector<pair<double, double>> Vetor_Saida; 
+    double Erros[MAXNEU], Somatorio_Erro, Maior;
     long Contador, Dinamico;
     char Sair;
 
@@ -120,7 +121,8 @@ void Rede ::Treinar()
         Contador++;
 
         // FEED-FORWARD
-        C[0].Treinar_Neuronios(entrada[Linha_Escolhida]); //paraleizado
+        // Treinar neuronios da primeira camada
+        C[0].Treinar_Neuronios(entrada); //paraleizado
         C[0].Funcao_Ativacao();                     //paraleizado
         C[0].Retornar_Saida(Vetor_Saida);           //paraleizado
 

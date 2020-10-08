@@ -38,12 +38,12 @@ double Neuronio ::Erro_Peso(double Erro, int Indice_Peso)
   Dada uma entrada, retorna a sa�da do neur�nio
   multiplicando-a pelos pesos
  *********************************************************/
-double Neuronio ::Somatorio(vector<pair<double, double>> &Entrada)
+double Neuronio ::Somatorio(pair<double, double> Entrada)
 {
 	double Soma = 0;
-	#pragma omp simd reduction(+:Soma)
-	for (int i = 0; i < Numero_Pesos; i++)
-		Soma += (Entrada[i] * W[i]);
+	
+	Soma += (Entrada.first * W[0]);
+	Soma += (Entrada.second * W[1]);
 
 	return Soma;
 }

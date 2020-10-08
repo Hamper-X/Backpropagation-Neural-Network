@@ -49,6 +49,7 @@ int main()
 				cin >> Numero_Neuronio_Camada[i];
 			}
 
+			// OK
 			R.Inicializar_Rede(
 					Numero_Camadas,
 					Numero_Linhas,
