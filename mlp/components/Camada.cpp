@@ -51,7 +51,6 @@ void Camada ::Treinar_Neuronios(double Entrada[])
 void Camada ::Calcular_Erro_Camada_Saida(double Erros[], double Y[])
 {
 	int i;
-	//#pragma omp parallel for private(i) schedule(dynamic)
 	for (i = 0; i < Numero_Neuronios; i++)
 		Erros[i] = (Y[i] - Saida[i]) * Saida[i] * (1 - Saida[i]);
 }
@@ -82,11 +81,11 @@ void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
 	/* C�lculo do Somat�rio que ser� usado para o c�lculo do erro
 	   da camada anterior */
 
-	//#pragma omp parallel for private(i, j) schedule(dynamic) reduction (+:Temp)
-	//#pragma omp parallel for private(i, j) schedule(dynamic)
+	//#pragma omp parallel for private(i,j) reduction(+:Temp)
 	for (i = 1; i < Numero_Pesos; i++)
 	{
 		Temp = 0;
+		//#pragma omp parallel for private(i) reduction(+:Temp)
 		for (j = 0; j < Numero_Neuronios; j++)
 		{
 			Temp += N[j].Erro_Peso(Erros[j], i);
@@ -96,7 +95,7 @@ void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
 
 	/* Ajusta os pesos de cada neur�nio  de acordo com o erro
 	   da camada da frente e a sa�da da pr�pria camada */
-
+	//#pragma omp parallel for private(i,j)
 	for (i = 0; i < Numero_Neuronios; i++)
 		for (j = 0; j < Numero_Pesos; j++)
 			N[i].Ajustar_Peso(Entrada[j], Erros[i], j);
@@ -104,6 +103,7 @@ void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
 	/* Atribui o vetor de erros calculado, para o vetor erro
 	   que ser� retornado */
 
+	//#pragma omp parallel for private(i)
 	for (i = 0; i < (Numero_Pesos - 1); i++)
 		Erros[i] = Erro_Aux[i];
 }
@@ -114,10 +114,8 @@ void Camada ::Ajustar_Pesos_Neuronios(double Erros[], double Entrada[])
  *********************************************************/
 void Camada ::Funcao_Ativacao()
 {
-	int i;
-
-	//#pragma omp parallel for private(i)
-	for (i = 0; i < Numero_Neuronios; i++)
+	//#pragma omp parallel for 
+	for (int i = 0; i < Numero_Neuronios; i++)
 		Saida[i] = 1 / (1 + exp(-Saida[i]));
 }
 

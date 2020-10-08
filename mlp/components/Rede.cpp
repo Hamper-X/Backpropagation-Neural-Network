@@ -31,10 +31,11 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
     Entrada = fopen("../database/X.txt", "rb");
     Saida = fopen("../database/Y.txt", "rb");
 
+    #pragma omp parallel for private(i) private(j)
     for (i = 0; i < Numero_Linhas; i++)
         for (j = 0; j < Numero_Colunas_Entrada; j++)
             fread(&X[i][j], sizeof(double), 1, Entrada);
-
+    #pragma omp parallel for private(i) private(j)
     for (i = 0; i < Numero_Linhas; i++)
         for (j = 0; j < Numero_Colunas_Saida; j++)
             fread(&Y[i][j], sizeof(double), 1, Saida);
@@ -43,7 +44,7 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
     fclose(Saida);
 
     C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Colunas_Entrada);
-
+ 
     for (i = 1; i < Numero_Camadas; i++)
         C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
@@ -54,15 +55,15 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
  *********************************************************/
 void Rede ::Calcular_Resultado(double Entrada[], double Saida[])
 {
-    int i, j;
 
-    for (i = 0; i < Numero_Camadas; i++)
+    //  #pragma omp parallel for 
+    for (int i = 0; i < Numero_Camadas; i++)
     {
         C[i].Treinar_Neuronios(Entrada);
         C[i].Funcao_Ativacao();
         C[i].Retornar_Saida(Saida);
 
-        for (j = 0; j < MAXNEU; j++)
+        for (int j = 0; j < MAXNEU; j++)
             Entrada[j] = Saida[j];
     }
 }
@@ -79,7 +80,7 @@ void Rede ::Treinar()
     char Sair;
 
 /* Inicializando vari�veis */
-#pragma omp parallel for private(i)
+    #pragma omp parallel for private(i)
     for (i = 0; i < MAXLIN; i++)
         Marcados[i] = 0;
 
@@ -116,6 +117,7 @@ void Rede ::Treinar()
         C[0].Funcao_Ativacao();                     //paraleizado
         C[0].Retornar_Saida(Vetor_Saida);           //paraleizado
 
+        //#pragma omp parallel for private(i)
         for (i = 1; i < Numero_Camadas; i++)
         {
             C[i].Treinar_Neuronios(Vetor_Saida); //paraleizado
@@ -145,6 +147,7 @@ void Rede ::Treinar()
         C[Camada_Saida].Calcular_Erro_Final(Erros, Y[Linha_Escolhida]); //paraleizado
 
         Somatorio_Erro = 0;
+        //#pragma omp parallel for private(i) reduction(+:Somatorio_Erro)
         for (i = 0; i < Numero_Colunas_Saida; i++)
             Somatorio_Erro += pow(Erros[i], 2);
 
