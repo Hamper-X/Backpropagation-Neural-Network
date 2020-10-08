@@ -23,8 +23,8 @@ int main()
 
 	time_t inicio, fim;
 
-	double Entrada[MAXNEU];
-	double Saida[MAXNEU];
+	vector<pair<double, double>> Entrada;
+	vector<double> Saida;
 
 	char Continua = 'r';
 	Rede R;

@@ -28,5 +28,5 @@ public:
 	void Calcular_Erro_Camada_Saida(double Erros[], vector<double> &Y);
 	void Calcular_Erro_Camada(double Erros[]);
 	double Somatorio_Erro(double Erros[]);
-	void Calcular_Erro_Final(double Erros[], double Y[]);
+	void Calcular_Erro_Final(double Erros[], vector<double> &Y);
 };

@@ -60,19 +60,21 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
   Calcula a resposta da rede para uma certa entrada,
   retornando a sa�da
  *********************************************************/
-void Rede ::Calcular_Resultado(double Entrada[], double Saida[])
+void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<double> &Saida)
 {
     int i, j;
+    vector<pair<double, double>> saidaAux;
 
     for (i = 0; i < Numero_Camadas; i++)
     {
         C[i].Treinar_Neuronios(Entrada);
         C[i].Funcao_Ativacao();
-        C[i].Retornar_Saida(Saida);
+        C[i].Retornar_Saida(saidaAux);
 
         for (j = 0; j < MAXNEU; j++)
-            Entrada[j] = Saida[j];
+            Entrada[j] = saidaAux[j];
     }
+
 }
 
 /*********************************************************
@@ -133,7 +135,7 @@ void Rede ::Treinar()
             C[i].Retornar_Saida(Vetor_Saida);    //paraleizado
         }
 
-        // BACK-PROPAGATION
+        // BACK-PROPAGATION -> OK DUVIDOSO
         /* Ajustando pesos da camada de sa�da */
         C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, saida); //paraleizado
         C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);                       //paraleizado
@@ -144,16 +146,17 @@ void Rede ::Treinar()
         {
             C[i].Calcular_Erro_Camada(Erros);                        //paraleizado
             C[i - 1].Retornar_Saida(Vetor_Saida);                    //paraleizado
-            C[i].Ajustar_Pesos_Neuronios(Erros, entrada[Linha_Escolhida]); //paraleizado
+            C[i].Ajustar_Pesos_Neuronios(Erros, entrada); //paraleizado
         }
 
         /* Ajustando pesos da primeira camada */
         C[0].Calcular_Erro_Camada(Erros);                        //paraleizado
-        C[0].Ajustar_Pesos_Neuronios(Erros, X[Linha_Escolhida]); //paraleizado
+        C[0].Ajustar_Pesos_Neuronios(Erros, entrada); //paraleizado
 
         /* Calculando o erro global */
-        C[Camada_Saida].Calcular_Erro_Final(Erros, Y[Linha_Escolhida]); //paraleizado
+        C[Camada_Saida].Calcular_Erro_Final(Erros, saida); //paraleizado
 
+        // FÓRMULA
         Somatorio_Erro = 0;
         for (i = 0; i < Numero_Linhas_Saida; i++)
             Somatorio_Erro += pow(Erros[i], 2);
@@ -161,6 +164,7 @@ void Rede ::Treinar()
         Somatorio_Erro /= 2;
 
         /* Verificando condi��es */
+        // REMOVER BIAS DINÂMICO
         if (Somatorio_Erro < Maior)
         {
             Dinamico = 0;

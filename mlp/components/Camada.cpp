@@ -26,7 +26,7 @@ void Camada ::Inicializar_Camada(int Numero_Neuronios, int Numero_Pesos)
   Calcula os erros da camada de sa�da com base na sa�da
   desejada Y, retornando os erros
  *********************************************************/
-void Camada ::Calcular_Erro_Final(double Erros[], double Y[])
+void Camada ::Calcular_Erro_Final(double Erros[], vector<double> &Y)
 {
 	int i;
 
