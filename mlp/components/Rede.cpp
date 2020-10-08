@@ -74,6 +74,8 @@ void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<dou
         for (j = 0; j < MAXNEU; j++)
             Entrada[j] = saidaAux[j];
     }
+    
+
 
 }
 

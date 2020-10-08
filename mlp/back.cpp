@@ -64,10 +64,12 @@ int main()
 
 		cout << "\n\nDigite as entradas da rede:\n";
 
+		int a, b;
 		for (i = 0; i < Numero_Linhas_Entrada; i++)
 		{
 			cout << "\nEntrada " << i << " : ";
-			cin >> Entrada[i];
+			cin >> a >> b; 
+			Entrada.push_back(make_pair(a, b));
 		}
 
 		R.Calcular_Resultado(Entrada, Saida);
