@@ -40,10 +40,10 @@ double Neuronio ::Erro_Peso(double Erro, int Indice_Peso)
  *********************************************************/
 double Neuronio ::Somatorio(double Entrada[])
 {
-	double Soma = 0;
-	#pragma omp simd reduction(+:Soma)
+	double Soma = 0,x=0;
+	//#pragma omp parallel for reduction(+:Soma)
 	for (int i = 0; i < Numero_Pesos; i++)
-		Soma += (Entrada[i] * W[i]);
+			Soma += Entrada[i] * W[i];
 
 	return Soma;
 }
@@ -52,6 +52,8 @@ double Neuronio ::Somatorio(double Entrada[])
   Dado o erro da camada da frente, a sa�da do neur�nio,
   e Indice do Peso, calcula-se o novo peso
  *********************************************************/
+
+//da pra por reduction nesse trem sem usar parallel for?
 void Neuronio ::Ajustar_Peso(double Entrada, double Erro, int Indice_Peso)
 {
 	W[Indice_Peso] += Utils::BETA * Erro * Entrada;
