@@ -15,4 +15,6 @@ class Utils
         static void gotoxy(int x, int y);
         void gerarBaseDeDados();
         void conferir();
+	 	void gerarBaseDeDados2();
+        void conferir2();
 };
