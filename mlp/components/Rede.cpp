@@ -28,12 +28,11 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
     this->Numero_Linhas_Entrada = Numero_Linhas_Entrada;
     this->Numero_Linhas_Saida = Numero_Linhas_Saida;
 
-    Entrada = fopen("../database/Entrada.txt", "rb");
-    Saida = fopen("../database/Saida.txt", "rb");
+    Entrada = fopen("../database/Entrada.txt", "r");
+    Saida = fopen("../database/Saida.txt", "r");
 
     for (i = 0; i < Numero_Linhas; i++)
     {        
-
         fread(&a, sizeof(double), 1, Entrada);
         fread(&b, sizeof(double), 1, Entrada);
         entrada.push_back(make_pair(a, b));
@@ -49,11 +48,12 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
     fclose(Saida);
 
     //camada intermediária padrão
-    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Linhas_Entrada);
+    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Linhas_Entrada); // OK
 
     // Camadas intermediárias
     for (i = 1; i < Numero_Camadas; i++)
-        C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
+        C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], Numero_Linhas_Entrada);
+        //C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
 
 /*********************************************************
@@ -87,7 +87,7 @@ void Rede ::Treinar()
     long Contador, Dinamico;
     char Sair;
 
-/* Inicializando vari�veis */
+/* Inicializando vari�veis ???*/
 #pragma omp parallel for private(i)
     for (i = 0; i < MAXLIN; i++)
         Marcados[i] = 0;
@@ -122,8 +122,8 @@ void Rede ::Treinar()
 
         // FEED-FORWARD
         // Treinar neuronios da primeira camada
-        C[0].Treinar_Neuronios(entrada); //paraleizado
-        C[0].Funcao_Ativacao();                     //paraleizado
+        C[0].Treinar_Neuronios(entrada); //OK
+        C[0].Funcao_Ativacao();                     //OK       
         C[0].Retornar_Saida(Vetor_Saida);           //paraleizado
 
         for (i = 1; i < Numero_Camadas; i++)
@@ -135,7 +135,7 @@ void Rede ::Treinar()
 
         // BACK-PROPAGATION
         /* Ajustando pesos da camada de sa�da */
-        C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, Y[Linha_Escolhida]); //paraleizado
+        C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, saida); //paraleizado
         C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);                       //paraleizado
         C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida);           //paraleizado
 

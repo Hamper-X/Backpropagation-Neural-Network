@@ -25,7 +25,7 @@ public:
 	void Funcao_Ativacao();											 // Joga sa�da linear na funcao de ativacao
 	void Retornar_Saida(vector<pair<double, double>> &Linha);							 // Retorna a sa�da dos neur�nios
 	void Ajustar_Pesos_Neuronios(double Erros[], vector<pair<double, double>> Entrada);
-	void Calcular_Erro_Camada_Saida(double Erros[], double Y[]);
+	void Calcular_Erro_Camada_Saida(double Erros[], vector<double> &Y);
 	void Calcular_Erro_Camada(double Erros[]);
 	double Somatorio_Erro(double Erros[]);
 	void Calcular_Erro_Final(double Erros[], double Y[]);

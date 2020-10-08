@@ -54,7 +54,7 @@ void Utils::gerarBaseDeDados2()
 			c = 0;
 		else
 		{
-			if((a == 0 && b == 1) && (a == 1 && b == 0)) 
+			if((a == 0 && b == 1) || (a == 1 && b == 0)) 
 				c = 1;
 			else
 				cout << "ERRO!" << endl;
@@ -107,7 +107,7 @@ void Utils::conferir2()
 			continue;
 		else
 		{
-			if((a == 0 && b == 1) && (a == 1 && b == 0)) 
+			if((a == 0 && b == 1) || (a == 1 && b == 0)) 
 				continue;
 			else
 				printf("ENTRADAS INCONSISTENTES: linha %d, a = %d, b = %d, c = %d", i, a, b, c);

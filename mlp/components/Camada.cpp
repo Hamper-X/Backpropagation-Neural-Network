@@ -50,9 +50,10 @@ void Camada ::Treinar_Neuronios(vector<pair<double, double>> &Entrada)
   Calcula os erros da camada de sa�da com base na sa�da
   desejada Y, retornando os erros
  *********************************************************/
-void Camada ::Calcular_Erro_Camada_Saida(double Erros[], double Y[])
+void Camada ::Calcular_Erro_Camada_Saida(double Erros[], vector<double> &Y)
 {
 	int i;
+	
 	//#pragma omp parallel for private(i) schedule(dynamic)
 	for (i = 0; i < Numero_Neuronios; i++)
 		Erros[i] = (Y[i] - Saida[i]) * Saida[i] * (1 - Saida[i]);
@@ -131,8 +132,9 @@ void Camada ::Funcao_Ativacao()
 void Camada ::Retornar_Saida(vector<pair<double, double>> &Linha)
 {
 	int i;
-
-	Linha.push_back(make_pair(1, 1));
+	
+	// >>>>>>>AVALIAR<<<<<<<<
+	Linha.push_back(make_pair(1, 1)); 
 	//#pragma omp parallel for private(i)
 	for (i = 1; i <= Numero_Neuronios; i++)
 		Linha.push_back(make_pair(Saida[i - 1], Saida[i]));

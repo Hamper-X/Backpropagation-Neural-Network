@@ -31,8 +31,8 @@ int main()
 	Utils u;
 
 	Numero_Linhas = NUMLIN;
-	Numero_Linhas_Entrada = NUMCOLENT;
-	Numero_Linhas_Saida = NUMCOLSAI;
+	Numero_Linhas_Entrada = NUMLIN;
+	Numero_Linhas_Saida = NUMLIN;
 	
 	while (Continua != 'n')
 	{
@@ -40,14 +40,14 @@ int main()
 
 		if (Continua == 'r')
 		{
-			cout << "\n\nDigite o numero de camadas: ";
-			cin >> Numero_Camadas;
+			// cout << "\n\nDigite o numero de camadas: ";
+			// cin >> Numero_Camadas;
 
-			for (i = 0; i < Numero_Camadas; i++)
-			{
-				cout << "\n\nDigite o numero de neuronios da camada " << i << " : ";
-				cin >> Numero_Neuronio_Camada[i];
-			}
+			// for (i = 0; i < Numero_Camadas; i++)
+			// {
+			// 	cout << "\n\nDigite o numero de neuronios da camada " << i << " : ";
+			// 	cin >> Numero_Neuronio_Camada[i];
+			// }
 
 			// OK
 			R.Inicializar_Rede(
