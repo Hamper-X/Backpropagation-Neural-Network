@@ -41,6 +41,7 @@ case "$1" in
         back.cpp ;;
 
 *) g++ -g -o back.exe \
+		-std=c++11 \
         -I utils -I components components/*.cpp utils/*.cpp\
         back.cpp ;;
 esac
