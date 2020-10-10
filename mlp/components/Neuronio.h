@@ -11,7 +11,7 @@ class Neuronio
 {
 	private:
 		int Numero_Pesos; // N�mero de pesos do neur�nio
-		double W[MAXPES]; // Vetor de pesos
+		double W[NUMPES]; // Vetor de pesos
 
 	public:
 		Neuronio();

@@ -16,7 +16,7 @@ void Neuronio ::Inicializar_Neuronio(int Numero_Pesos)
 	this->Numero_Pesos = Numero_Pesos;
 
 	srand(time(NULL));
-	#pragma omp parallel for private(i) schedule(dynamic,100)
+	//#pragma omp parallel for private(i) schedule(dynamic,100)
 	for (i = 0; i < Numero_Pesos; i++)
 	{
 		p = (rand() % 11) / 10.0;

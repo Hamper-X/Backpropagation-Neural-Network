@@ -9,7 +9,14 @@ double Utils::BETA = MI;
 
 void Utils::gotoxy(int x, int y)
 {
-    printf("%c[%d;%df", 0x1B, y, x);
+    #if defined(__MINGW32__) || defined(_MSC_VER) || defined(_WIN32) || defined(WIN32)
+        COORD coord;
+        coord.X = x;
+        coord.Y = y;
+        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+    #else
+        printf("%c[%d;%df", 0x1B, y, x);
+    #endif
 }
 
 void Utils::gerarBaseDeDados()

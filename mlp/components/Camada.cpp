@@ -1,5 +1,6 @@
 #include <utility>
 #include <vector>
+#include <stdio.h>
 
 #include "Camada.h"
 
@@ -11,15 +12,15 @@ Camada::Camada() {}
   Inicializa o Numero de Neuronios e o Numero de Pesos
   e invoca a inicializa��o dos neur�nios
  *********************************************************/
-void Camada ::Inicializar_Camada(int Numero_Neuronios, int Numero_Pesos)
+void Camada ::Inicializar_Camada(int Numero_Neuronios)
 {
 	int i;
-
 	this->Numero_Neuronios = Numero_Neuronios;
-	this->Numero_Pesos = Numero_Pesos;
-
+	this->Numero_Pesos = NUMPES;
+	
 	for (i = 0; i < Numero_Neuronios; i++)
 		N[i].Inicializar_Neuronio(Numero_Pesos);
+	
 }
 
 /*********************************************************
@@ -42,6 +43,7 @@ void Camada ::Calcular_Erro_Final(double Erros[], vector<double> &Y)
 void Camada ::Treinar_Neuronios(vector<pair<double, double>> &Entrada)
 {
 	//#pragma omp parallel for schedule(dynamic,100)
+	// srand(time(NULL));
 	for (int i = 0; i < Numero_Neuronios; i++)
 		Saida[i] = N[i].Somatorio(Entrada[i]);
 }
@@ -80,7 +82,7 @@ void Camada ::Calcular_Erro_Camada(double Erros[])
 void Camada ::Ajustar_Pesos_Neuronios(double Erros[], vector<pair<double, double>> Entrada)
 {
 	int i, j;
-	double Temp, Erro_Aux[MAXNEU];
+	double Temp, Erro_Aux[NUMNEU];
 
 	/* C�lculo do Somat�rio que ser� usado para o c�lculo do erro
 	   da camada anterior */

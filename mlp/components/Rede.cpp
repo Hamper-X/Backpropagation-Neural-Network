@@ -17,43 +17,42 @@ Rede::Rede() {}
   Inicializa todas as vari�veis da rede, inclusive a
   leitura das entradas e sa�das da rede
  *********************************************************/
-void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas,
-                             int Numero_Linhas_Entrada, int Numero_Linhas_Saida, int Numero_Neuronio_Camada[])
+void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
+                             int Numero_Linhas_Saida, int Numero_Neuronio_Camada[])
 {
     int i, j, a, b;
     FILE *Entrada, *Saida;
 
     this->Numero_Camadas = Numero_Camadas;
-    this->Numero_Linhas = Numero_Linhas;
     this->Numero_Linhas_Entrada = Numero_Linhas_Entrada;
     this->Numero_Linhas_Saida = Numero_Linhas_Saida;
 
     Entrada = fopen("../database/Entrada.txt", "r");
     Saida = fopen("../database/Saida.txt", "r");
 
-    for (i = 0; i < Numero_Linhas; i++)
-    {        
+    for (i = 0; i < Numero_Linhas_Entrada; i++)
+    {
         fread(&a, sizeof(double), 1, Entrada);
         fread(&b, sizeof(double), 1, Entrada);
         entrada.push_back(make_pair(a, b));
     }
 
-    for (i = 0; i < Numero_Linhas; i++)
+    for (i = 0; i < Numero_Linhas_Entrada; i++)
     {
         fread(&a, sizeof(double), 1, Saida);
         saida.push_back(a);
     }
 
     fclose(Entrada);
-    fclose(Saida);
-
+    fclose(Saida);    
     //camada intermediária padrão
-    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0], Numero_Linhas_Entrada); // OK
+    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0]); // OK
 
     // Camadas intermediárias
     for (i = 1; i < Numero_Camadas; i++)
-        C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], Numero_Linhas_Entrada);
-        //C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
+        C[i].Inicializar_Camada(Numero_Neuronio_Camada[i]);
+    
+    //C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
 
 /*********************************************************
@@ -64,6 +63,7 @@ void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<dou
 {
     int i, j;
     vector<pair<double, double>> saidaAux;
+    int Camada_Saida = Numero_Camadas - 1;
 
     for (i = 0; i < Numero_Camadas; i++)
     {
@@ -71,12 +71,12 @@ void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<dou
         C[i].Funcao_Ativacao();
         C[i].Retornar_Saida(saidaAux);
 
-        for (j = 0; j < MAXNEU; j++)
+        for (j = 0; j < NUMNEU; j++)
             Entrada[j] = saidaAux[j];
     }
-    
 
-
+    for (int i = 0; i < C[Camada_Saida].Numero_Neuronios; i++)
+        Saida[i] = C[Camada_Saida].N[i].Somatorio(Entrada[i]);
 }
 
 /*********************************************************
@@ -84,51 +84,27 @@ void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<dou
  *********************************************************/
 void Rede ::Treinar()
 {
-    int i, j, Linha_Escolhida, Iteracoes, Camada_Saida, Marcados[MAXLIN];
+    int i, j, Linha_Escolhida, Iteracoes, Camada_Saida;
     int p, q;
-    vector<pair<double, double>> Vetor_Saida; 
-    double Erros[MAXNEU], Somatorio_Erro, Maior;
-    long Contador, Dinamico;
+    vector<pair<double, double>> Vetor_Saida;
+    double Erros[NUMNEU], Somatorio_Erro, Maior;
+    long Contador;
     char Sair;
 
-/* Inicializando vari�veis ???*/
-#pragma omp parallel for private(i)
-    for (i = 0; i < MAXLIN; i++)
-        Marcados[i] = 0;
-
-    Dinamico = 0;
+    /* Inicializando vari�veis ???*/
     Sair = 0;
     Contador = 0;
     Maior = 1;
-    Iteracoes = 0;
     Camada_Saida = Numero_Camadas - 1;
 
     do
     {
-        Linha_Escolhida = rand() % NUMLIN;
-
-        j = 0;
-        while (Marcados[Linha_Escolhida] == 1)
-        {
-            Linha_Escolhida++;
-            j++;
-
-            if (Linha_Escolhida == NUMLIN)
-                Linha_Escolhida = 0;
-
-            if (j == NUMLIN)
-                for (i = 0; i < MAXLIN; i++)
-                    Marcados[i] = 0;
-        }
-
-        Marcados[Linha_Escolhida] = 1;
-        Contador++;
-
+        ++Contador;
         // FEED-FORWARD
         // Treinar neuronios da primeira camada
-        C[0].Treinar_Neuronios(entrada); //OK
-        C[0].Funcao_Ativacao();                     //OK       
-        C[0].Retornar_Saida(Vetor_Saida);           //paraleizado
+        C[0].Treinar_Neuronios(entrada);  //OK
+        C[0].Funcao_Ativacao();           //OK
+        C[0].Retornar_Saida(Vetor_Saida); //paraleizado
 
         for (i = 1; i < Numero_Camadas; i++)
         {
@@ -139,60 +115,42 @@ void Rede ::Treinar()
 
         // BACK-PROPAGATION -> OK DUVIDOSO
         /* Ajustando pesos da camada de sa�da */
-        C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, saida); //paraleizado
-        C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);                       //paraleizado
-        C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida);           //paraleizado
+        C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, saida);    //paraleizado
+        C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);             //paraleizado
+        C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida); //paraleizado
 
         /* Ajustando pesos das camadas intermedi�rias */
         for (i = Camada_Saida - 1; i > 0; i--)
         {
-            C[i].Calcular_Erro_Camada(Erros);                        //paraleizado
-            C[i - 1].Retornar_Saida(Vetor_Saida);                    //paraleizado
+            C[i].Calcular_Erro_Camada(Erros);             //paraleizado
+            C[i - 1].Retornar_Saida(Vetor_Saida);         //paraleizado
             C[i].Ajustar_Pesos_Neuronios(Erros, entrada); //paraleizado
         }
 
         /* Ajustando pesos da primeira camada */
-        C[0].Calcular_Erro_Camada(Erros);                        //paraleizado
+        C[0].Calcular_Erro_Camada(Erros);             //paraleizado
         C[0].Ajustar_Pesos_Neuronios(Erros, entrada); //paraleizado
 
         /* Calculando o erro global */
         C[Camada_Saida].Calcular_Erro_Final(Erros, saida); //paraleizado
-
+        //printf("xoreiiii");
+        
         // FÓRMULA
         Somatorio_Erro = 0;
-        for (i = 0; i < Numero_Linhas_Saida; i++)
+        for (i = 0; i < NUMNEU; i++)
             Somatorio_Erro += pow(Erros[i], 2);
 
         Somatorio_Erro /= 2;
+
 
         /* Verificando condi��es */
         // REMOVER BIAS DINÂMICO
         if (Somatorio_Erro < Maior)
         {
-            Dinamico = 0;
             Utils::gotoxy(1, 10);
             cout << "\n\nErro = " << Somatorio_Erro << "   ";
             Maior = Somatorio_Erro;
         }
-        else
-            Dinamico++;
-
-        if (Somatorio_Erro <= TOLERANCIA)
-            Iteracoes++;
-        else
-            Iteracoes = 0;
-
-        /* Beta din�mico */
-        if (Dinamico == 200000)
-        {
-            Dinamico = 0;
-            p = rand() % 6;
-            q = rand() % 3;
-            Utils::BETA += (p / 10.0) * (q - 1);
-        }
-
-        if (Dinamico == 50000)
-            Utils::BETA = MI;
 
         /* Exibi��o na tela */
         if (Contador % 10000 == 0)
@@ -214,5 +172,5 @@ void Rede ::Treinar()
             Utils::gotoxy(1, 10);
         }
 
-    } while (Iteracoes < NUMITE && Sair != 'y');
+    } while (Sair != 'y');
 }

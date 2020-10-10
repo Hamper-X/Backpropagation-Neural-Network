@@ -13,14 +13,14 @@ using namespace std;
 class Camada
 {
 private:
-	int Numero_Neuronios; // N�mero de neur�nios na camada
 	int Numero_Pesos;
-	double Saida[MAXNEU]; // Sa�da dos neur�nios da camada
-	Neuronio N[MAXNEU];	  // Neur�nios da camada
+	double Saida[NUMNEU]; // Sa�da dos neur�nios da camada
 
 public:
+	int Numero_Neuronios; // N�mero de neur�nios na camada
+	Neuronio N[NUMNEU];	  // Neur�nios da camada
 	Camada();
-	void Inicializar_Camada(int Numero_Neuronios, int Numero_Pesos); // Atribui o n�mero de neur�nios
+	void Inicializar_Camada(int Numero_Neuronios); // Atribui o n�mero de neur�nios
 	void Treinar_Neuronios(vector<pair<double, double>> &Entrada);	 // Treina os neur�nios com uma entrada
 	void Funcao_Ativacao();											 // Joga sa�da linear na funcao de ativacao
 	void Retornar_Saida(vector<pair<double, double>> &Linha);							 // Retorna a sa�da dos neur�nios
