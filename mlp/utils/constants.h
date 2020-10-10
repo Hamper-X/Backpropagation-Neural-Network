@@ -25,7 +25,7 @@
 // #define NUMCOLSAI 5 // N�mero de Colunas de Saida
 // #define NUMITE 1    // Numero de Iteracoes
 
-#define NUMCAM 2   // N�mero m�ximo de camadas
+#define NUMCAM 3   // N�mero m�ximo de camadas
 #define NUMNEU 2 // N�mero m�ximo de neur�nios
 #define NUMPES 2 // N�mero m�ximo de pesos
 

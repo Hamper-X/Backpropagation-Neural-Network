@@ -46,11 +46,11 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
     fclose(Entrada);
     fclose(Saida);
     //camada intermediária padrão
-    C[0].Inicializar_Camada(2); // OK
+    C[0].Inicializar_Camada(NUMNEU); // OK
 
     // Camadas intermediárias
     for (i = 1; i < Numero_Camadas; i++)
-        C[i].Inicializar_Camada(2);
+        C[i].Inicializar_Camada(NUMNEU);
 
     //C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
@@ -64,10 +64,11 @@ void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<dou
     int i, j;
     vector<pair<double, double>> saidaAux;
     int Camada_Saida = Numero_Camadas - 1;
+    int linha_escolhida = 0;
 
-    for (i = 0; i < Numero_Camadas; i++)
+    for (i = 0; i < Numero_Camadas; i++, linha_escolhida += 2)
     {
-        C[i].Treinar_Neuronios(Entrada);
+        C[i].Treinar_Neuronios(Entrada, linha_escolhida);
         C[i].Funcao_Ativacao();
         C[i].Retornar_Saida(saidaAux);
 
@@ -84,17 +85,22 @@ void Rede ::Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<dou
  *********************************************************/
 void Rede ::Treinar()
 {
-    int i, j, Linha_Escolhida, Iteracoes, Camada_Saida;
+    int i, j, Linha_Escolhida, Iteracoes, Camada_Saida, Marcados[NUMIN];
     int p, q;
     vector<pair<double, double>> Vetor_Saida;
-    double Erros[NUMNEU], Marcados[NUMIN], Somatorio_Erro, Maior;
-    long Contador;
+    double Erros[NUMNEU], Somatorio_Erro, Maior;
+    long Contador, Dinamico;
     char Sair;
 
     /* Inicializando vari�veis ???*/
+    for (i = 0; i < NUMIN; i++)
+        Marcados[i] = 0;
+
+    Dinamico = 0;
     Sair = 0;
     Contador = 0;
     Maior = 1;
+    Iteracoes = 0;
     Camada_Saida = Numero_Camadas - 1;
 
     do
@@ -115,18 +121,19 @@ void Rede ::Treinar()
                     Marcados[i] = 0;
         }
 
-        Marcados[Linha_Escolhida] = 1;
+        // marcar par de linhas escolhidas
+        Marcados[Linha_Escolhida] = Marcados[Linha_Escolhida+1] = 1;
         Contador++;
 
         // FEED-FORWARD
         // Treinar neuronios da primeira camada
-        C[0].Treinar_Neuronios(entrada);  //OK
+        C[0].Treinar_Neuronios(entrada, Linha_Escolhida);  //OK
         C[0].Funcao_Ativacao();           //OK
         C[0].Retornar_Saida(Vetor_Saida); //paraleizado
 
         for (i = 1; i < Numero_Camadas; i++)
         {
-            C[i].Treinar_Neuronios(Vetor_Saida); //paraleizado
+            C[i].Treinar_Neuronios(Vetor_Saida, Linha_Escolhida); //paraleizado
             C[i].Funcao_Ativacao();              //paraleizado
             C[i].Retornar_Saida(Vetor_Saida);    //paraleizado
         }
@@ -151,7 +158,6 @@ void Rede ::Treinar()
 
         /* Calculando o erro global */
         C[Camada_Saida].Calcular_Erro_Final(Erros, saida); //paraleizado
-        //printf("xoreiiii");
 
         // FÓRMULA
         Somatorio_Erro = 0;
@@ -161,18 +167,38 @@ void Rede ::Treinar()
         Somatorio_Erro /= 2;
 
         /* Verificando condi��es */
-        // REMOVER BIAS DINÂMICO
         if (Somatorio_Erro < Maior)
         {
+            Dinamico = 0;
             Utils::gotoxy(1, 10);
             cout << "\n\nErro = " << Somatorio_Erro << "   ";
             Maior = Somatorio_Erro;
         }
+        else
+            Dinamico++;
+
+        if (Somatorio_Erro <= TOLERANCIA)
+            Iteracoes++;
+        else
+            Iteracoes = 0;
+
+        /* Beta din�mico */
+        if (Dinamico == 200000)
+        {
+            Dinamico = 0;
+            p = rand() % 6;
+            q = rand() % 3;
+            Utils::BETA += (p / 10.0) * (q - 1);
+        }
+        if (Dinamico == 50000)
+            Utils::BETA = MI;
 
         /* Exibi��o na tela */
+        // cout << Contador << endl;
         if (Contador % 10000 == 0)
         {
             Utils::gotoxy(1, 10);
+            // limpar_tela();
             cout << "\nIteracoes = " << Contador;
             cout << "\n\nBeta = " << Utils::BETA << "  ";
         }
@@ -189,5 +215,9 @@ void Rede ::Treinar()
             Utils::gotoxy(1, 10);
         }
 
-    } while (Sair != 'y');
+        // int pao;
+        // cout << "debug" << endl;
+        // cin >> pao;
+
+    } while (Iteracoes < NUMITE && Sair != 'y');
 }

@@ -21,7 +21,7 @@ public:
 	Neuronio N[NUMNEU];	  // Neur�nios da camada
 	Camada();
 	void Inicializar_Camada(int Numero_Neuronios); // Atribui o n�mero de neur�nios
-	void Treinar_Neuronios(vector<pair<double, double>> &Entrada);	 // Treina os neur�nios com uma entrada
+	void Treinar_Neuronios(vector<pair<double, double>> &Entrada, int linha_escolhida);	 // Treina os neur�nios com uma entrada
 	void Funcao_Ativacao();											 // Joga sa�da linear na funcao de ativacao
 	void Retornar_Saida(vector<pair<double, double>> &Linha);							 // Retorna a sa�da dos neur�nios
 	void Ajustar_Pesos_Neuronios(double Erros[], vector<pair<double, double>> Entrada);

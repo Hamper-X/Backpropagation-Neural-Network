@@ -57,7 +57,7 @@ int main()
 		cout << "\n\nDigite as entradas da rede:\n";
 
 		int a, b;
-		for (i = 0; i < 3; i++)
+		for (i = 0; i < NUMIN; i++)
 		{
 			cout << "\nEntrada " << i << " : ";
 			cin >> a >> b; 
