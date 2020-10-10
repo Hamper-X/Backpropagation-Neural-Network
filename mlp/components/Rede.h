@@ -21,7 +21,7 @@ private:
 
 public:
 	Rede();
-	void Inicializar_Rede(int, int, int, int Numero_Neuronio_Camada[]); // Inicializa os valores das vari�veis
+	void Inicializar_Rede(int, int, int); // Inicializa os valores das vari�veis
 	void Treinar();															 // Treina toda a rede
 	void Calcular_Resultado(vector<pair<double, double>> &Entrada, vector<double> &Saida);
 };

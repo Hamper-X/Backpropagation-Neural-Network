@@ -42,17 +42,12 @@ int main()
 			// cout << "\n\nDigite o numero de camadas: ";
 			// cin >> Numero_Camadas;
 			Numero_Camadas = NUMCAM;
-
-			for (i = 0; i < Numero_Camadas; i++)
-			{
-				Numero_Neuronio_Camada[i] = 2;
-			}
+			
 			// OK
 			R.Inicializar_Rede(
 					Numero_Camadas,
 					Numero_Linhas_Entrada,
-					Numero_Linhas_Saida,
-					Numero_Neuronio_Camada);
+					Numero_Linhas_Saida);
 
 			time(&inicio); // tempo inicio
 			R.Treinar();

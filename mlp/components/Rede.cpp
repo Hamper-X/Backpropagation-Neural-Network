@@ -18,7 +18,7 @@ Rede::Rede() {}
   leitura das entradas e sa�das da rede
  *********************************************************/
 void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
-                             int Numero_Linhas_Saida, int Numero_Neuronio_Camada[])
+                             int Numero_Linhas_Saida)
 {
     int i, j, a, b;
     FILE *Entrada, *Saida;
@@ -44,14 +44,14 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
     }
 
     fclose(Entrada);
-    fclose(Saida);    
+    fclose(Saida);
     //camada intermediária padrão
-    C[0].Inicializar_Camada(Numero_Neuronio_Camada[0]); // OK
+    C[0].Inicializar_Camada(2); // OK
 
     // Camadas intermediárias
     for (i = 1; i < Numero_Camadas; i++)
-        C[i].Inicializar_Camada(Numero_Neuronio_Camada[i]);
-    
+        C[i].Inicializar_Camada(2);
+
     //C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
 
@@ -87,7 +87,7 @@ void Rede ::Treinar()
     int i, j, Linha_Escolhida, Iteracoes, Camada_Saida;
     int p, q;
     vector<pair<double, double>> Vetor_Saida;
-    double Erros[NUMNEU], Somatorio_Erro, Maior;
+    double Erros[NUMNEU], Marcados[NUMIN], Somatorio_Erro, Maior;
     long Contador;
     char Sair;
 
@@ -99,7 +99,25 @@ void Rede ::Treinar()
 
     do
     {
-        ++Contador;
+        Linha_Escolhida = rand() % NUMIN;
+
+        j = 0;
+        while (Marcados[Linha_Escolhida] == 1)
+        {
+            Linha_Escolhida++;
+            j++;
+
+            if (Linha_Escolhida == NUMIN)
+                Linha_Escolhida = 0;
+
+            if (j == NUMIN)
+                for (i = 0; i < NUMIN; i++)
+                    Marcados[i] = 0;
+        }
+
+        Marcados[Linha_Escolhida] = 1;
+        Contador++;
+
         // FEED-FORWARD
         // Treinar neuronios da primeira camada
         C[0].Treinar_Neuronios(entrada);  //OK
@@ -134,14 +152,13 @@ void Rede ::Treinar()
         /* Calculando o erro global */
         C[Camada_Saida].Calcular_Erro_Final(Erros, saida); //paraleizado
         //printf("xoreiiii");
-        
+
         // FÓRMULA
         Somatorio_Erro = 0;
         for (i = 0; i < NUMNEU; i++)
             Somatorio_Erro += pow(Erros[i], 2);
 
         Somatorio_Erro /= 2;
-
 
         /* Verificando condi��es */
         // REMOVER BIAS DINÂMICO
