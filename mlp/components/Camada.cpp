@@ -52,7 +52,7 @@ void Camada ::Treinar_Neuronios(double *Entrada)
   Calcula os erros da camada de sa�da com base na sa�da
   desejada Y, retornando os erros
  *********************************************************/
-void Camada ::Calcular_Erro_Camada_Saida(double *Erros, double *Y, int linha_escolhida)
+void Camada ::Calcular_Erro_Camada_Saida(double Erros[], double Y[], int linha_escolhida)
 {
 	int i;
 	
@@ -133,15 +133,14 @@ void Camada ::Funcao_Ativacao()
  *********************************************************/
 void Camada ::Retornar_Saida(double Linha[][NUMCOLIN])
 {
-	int i, j;
+	int i;
 	
 	// >>>>>>>AVALIAR<<<<<<<<
-	Linha[0][0] = 1;
-	Linha[0][1] = 1;
 
 	//#pragma omp parallel for private(i)
-	for (int i = 1; i < NUMNEU-1; i++)
+	for (i = 0; i < NUMNEU; i++)
 	{
+
 		Linha[i][0] = Saida[0];
 		Linha[i][1] = Saida[1];
 	}	
