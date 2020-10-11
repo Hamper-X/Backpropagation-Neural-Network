@@ -14,6 +14,7 @@ void Neuronio ::Inicializar_Neuronio(int Numero_Pesos)
 	int i, p, q;
 
 	this->Numero_Pesos = Numero_Pesos;
+	this->teta = -1;
 
 	srand(time(NULL));
 	//#pragma omp parallel for private(i) schedule(dynamic,100)
@@ -45,7 +46,7 @@ double Neuronio ::Somatorio(double *Entrada)
 	for (int i = 0; i < Numero_Pesos; i++)
     	Soma += Entrada[i] * W[i];
 
-	return Soma;
+	return (Soma-teta);
 }
 
 /*********************************************************

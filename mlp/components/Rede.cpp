@@ -77,7 +77,7 @@ void Rede ::Calcular_Resultado(double Entrada[][NUMCOLIN], double *Saida)
     {
         for (i = 0; i < Numero_Camadas; i++)
         {
-            C[i].Treinar_Neuronios(Entrada[j], 0);
+            C[i].Treinar_Neuronios(Entrada[j]);
             C[i].Funcao_Ativacao();
             C[i].Retornar_Saida(Entrada);
         }
@@ -115,6 +115,7 @@ void Rede ::Treinar()
     do
     {
         Linha_Escolhida = rand() % NUMIN;
+        /*
         j = 0;
         while (Marcados[Linha_Escolhida] == 1)
         {
@@ -128,19 +129,20 @@ void Rede ::Treinar()
                 for (i = 0; i < NUMIN; i++)
                     Marcados[i] = 0;
         }
+        */
 
         // marcar par de linhas escolhidas
-        ++Contador;
+        Contador++;
 
         // FEED-FORWARD
         // Treinar neuronios da primeira camada
-        C[0].Treinar_Neuronios(entrada[Linha_Escolhida], Linha_Escolhida); //OK
-        C[0].Funcao_Ativacao();                                            //OK
-        C[0].Retornar_Saida(Vetor_Saida);                                  //paraleizado
+        C[0].Treinar_Neuronios(entrada[Linha_Escolhida]); //OK
+        C[0].Funcao_Ativacao(); //OK
+        C[0].Retornar_Saida(Vetor_Saida); 
 
         for (i = 1; i < Numero_Camadas; i++)
         {
-            C[i].Treinar_Neuronios(Vetor_Saida[Linha_Escolhida], Linha_Escolhida); //paraleizado
+            C[i].Treinar_Neuronios(Vetor_Saida[Linha_Escolhida]); //paraleizado
             C[i].Funcao_Ativacao();                                                //paraleizado
             C[i].Retornar_Saida(Vetor_Saida);                                      //paraleizado
         }

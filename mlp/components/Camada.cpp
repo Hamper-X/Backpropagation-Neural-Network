@@ -40,7 +40,7 @@ void Camada ::Calcular_Erro_Final(double *Erros, double *Y)
   Dispara o somat�rio de um neur�nio para uma certa entrada
   armazenando a sua sa�da
  *********************************************************/
-void Camada ::Treinar_Neuronios(double *Entrada, int linha_escolhida)
+void Camada ::Treinar_Neuronios(double *Entrada)
 {
 	//#pragma omp parallel for schedule(dynamic,100)	
 	for (int i = 0; i < Numero_Neuronios; i++) {		
