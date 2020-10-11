@@ -30,6 +30,9 @@
 #define NUMPES 2 // N�mero m�ximo de pesos
 
 #define NUMIN 10000 // Numero maximo de entradas
+#define NUMCOLIN 3
+
+#define NUMINTEST 4
 
 #define NUMITE 1    // Numero de Iteracoes
 #define ESC 27

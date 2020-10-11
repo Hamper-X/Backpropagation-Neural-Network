@@ -23,7 +23,7 @@ int main()
 
 	time_t inicio, fim;
 
-	double Entrada [NUMIN][2];
+	double Entrada [NUMINTEST][NUMCOLIN];
 	double Saida[NUMIN];
 
 	char Continua = 'r';
@@ -43,12 +43,12 @@ int main()
 			// cin >> Numero_Camadas;
 			Numero_Camadas = NUMCAM;
 			
-			// OK
+			// OK			
 			R.Inicializar_Rede(
 					Numero_Camadas,
 					Numero_Linhas_Entrada,
 					Numero_Linhas_Saida);
-
+					
 			time(&inicio); // tempo inicio
 			R.Treinar();
 			time(&fim); //tempo fim
@@ -57,7 +57,7 @@ int main()
 		cout << "\n\nDigite as entradas da rede:\n";
 
 		int a, b;
-		for (i = 0; i < NUMIN; i++)
+		for (i = 0; i < NUMINTEST; i++)
 		{
 			cout << "\nEntrada " << i << " : ";
 			cin >> a >> b; 

@@ -56,10 +56,9 @@ void Camada ::Calcular_Erro_Camada_Saida(double *Erros, double *Y, int linha_esc
 {
 	int i;
 	
-	//#pragma omp parallel for private(i) schedule(dynamic)
-	for (i = 0; i < Numero_Neuronios; i++) {		
-		Erros[i] = (Y[i+linha_escolhida] - Saida[i]) * Saida[i] * (1 - Saida[i]);
-	}
+	//#pragma omp parallel for private(i) schedule(dynamic)		
+	Erros[0] = (Y[linha_escolhida] - Saida[i]) * Saida[i] * (1 - Saida[i]);
+	
 }
 
 /*********************************************************
@@ -80,7 +79,7 @@ void Camada ::Calcular_Erro_Camada(double *Erros)
   erros da camada da frente, e retorna o som�r�rio de erros
   da pr�pria camada
  *********************************************************/
-void Camada ::Ajustar_Pesos_Neuronios(double *Erros, double Entrada[][2])
+void Camada ::Ajustar_Pesos_Neuronios(double *Erros, double Entrada[][NUMCOLIN], int linha_escolhida)
 {
 	int i, j;
 	double Temp, Erro_Aux[NUMNEU];
@@ -95,7 +94,7 @@ void Camada ::Ajustar_Pesos_Neuronios(double *Erros, double Entrada[][2])
 		Temp = 0;
 		for (j = 0; j < Numero_Neuronios; j++)
 		{
-			Temp += N[j].Erro_Peso(Erros[j], i);
+			Temp += N[j].Erro_Peso(Erros[0], i);
 		}
 		Erro_Aux[i - 1] = Temp;
 	}
@@ -105,14 +104,14 @@ void Camada ::Ajustar_Pesos_Neuronios(double *Erros, double Entrada[][2])
 
 	for (i = 0; i < Numero_Neuronios; i++)
 	{
-		N[i].Ajustar_Peso(Entrada[j][0], Erros[i], 0);
-		N[i].Ajustar_Peso(Entrada[j][1], Erros[i], 1);
+		N[i].Ajustar_Peso(Entrada[linha_escolhida][0], Erros[i], 0);
+		N[i].Ajustar_Peso(Entrada[linha_escolhida][1], Erros[i], 1);
 	}
 
 	/* Atribui o vetor de erros calculado, para o vetor erro
 	   que ser� retornado */
 	// VOLTAR AQUI
-	for (i = 0; i < (Numero_Pesos); i++)
+	for (i = 0; i < (Numero_Pesos-1); i++)
 		Erros[i] = Erro_Aux[i];
 }
 
@@ -132,16 +131,18 @@ void Camada ::Funcao_Ativacao()
 /*********************************************************
   Retorna a Sa�da da Camada
  *********************************************************/
-void Camada ::Retornar_Saida(double Linha[][2])
+void Camada ::Retornar_Saida(double Linha[][NUMCOLIN])
 {
 	int i, j;
 	
 	// >>>>>>>AVALIAR<<<<<<<<
-	// Linha.push_back(make_pair(1, 1)); 
+	Linha[0][0] = 1;
+	Linha[0][1] = 1;
+
 	//#pragma omp parallel for private(i)
-	for (int i = 0; i < NUMNEU; i++)
+	for (int i = 1; i < NUMNEU-1; i++)
 	{
-		Linha[NUMNEU][0] = Saida[0];
-		Linha[NUMNEU][1] = Saida[1];
+		Linha[i][0] = Saida[0];
+		Linha[i][1] = Saida[1];
 	}	
 }

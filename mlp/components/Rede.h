@@ -16,12 +16,12 @@ private:
 
 	Camada C[NUMCAM]; // Camadas da rede
 
-	double entrada[NUMIN][2]; // vetor com os pares de entrada
+	double entrada[NUMIN][NUMCOLIN]; // vetor com os pares de entrada
 	double saida[NUMIN];				  //vetor de saidas
 
 public:
 	Rede();
 	void Inicializar_Rede(int, int, int); // Inicializa os valores das vari�veis
 	void Treinar();															 // Treina toda a rede
-	void Calcular_Resultado(double Entrada[][2], double *Saida);
+	void Calcular_Resultado(double Entrada[][NUMCOLIN], double *Saida);
 };

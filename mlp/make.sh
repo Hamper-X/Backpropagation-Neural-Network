@@ -11,7 +11,7 @@
 # fi
 
 case "$1" in
-"-t"|"-T") g++ -D test -g -fopenmp -o back.exe \
+"-t"|"-T") g++ -D test -g -o back.exe \
         -I utils -I components components/*.cpp utils/*.cpp\
         back.cpp ;;
 

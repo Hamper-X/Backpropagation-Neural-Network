@@ -20,7 +20,8 @@ Rede::Rede() {}
 void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
                              int Numero_Linhas_Saida)
 {
-    int i, j, a, b;
+    int i, j;
+    double a, b;
     FILE *Entrada, *Saida;
 
     this->Numero_Camadas = Numero_Camadas;
@@ -36,9 +37,10 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
         fread(&b, sizeof(double), 1, Entrada);
         entrada[i][0] = a;
         entrada[i][1] = b;
+        entrada[i][2] = 0;
     }
 
-    for (i = 0; i < Numero_Linhas_Entrada; i++)
+    for (i = 0; i < Numero_Linhas_Saida; i++)
     {
         fread(&a, sizeof(double), 1, Saida);
         saida[i] = a;
@@ -50,33 +52,35 @@ void Rede ::Inicializar_Rede(int Numero_Camadas, int Numero_Linhas_Entrada,
     C[0].Inicializar_Camada(NUMNEU); // OK
 
     // Camadas intermediárias
-    for (i = 1; i < Numero_Camadas - 1; i++)
+    for (i = 1; i < Numero_Camadas; i++)
         C[i].Inicializar_Camada(NUMNEU);
-    
-    C[i].Inicializar_Camada(1); // Camada de saida
-    
-    
-        // C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 
-    
+    // for (i = 1; i < Numero_Camadas - 1; i++)
+    //     C[i].Inicializar_Camada(NUMNEU);
+    // C[i].Inicializar_Camada(1); // Camada de saida
+
+    // C[i].Inicializar_Camada(Numero_Neuronio_Camada[i], (Numero_Neuronio_Camada[i - 1] + 1));
 }
 
 /*********************************************************
   Calcula a resposta da rede para uma certa entrada,
   retornando a sa�da
  *********************************************************/
-void Rede ::Calcular_Resultado(double Entrada[][2], double *Saida)
+void Rede ::Calcular_Resultado(double Entrada[][NUMCOLIN], double *Saida)
 {
     int i, j;
     double saidaAux[NUMIN][2];
     int Camada_Saida = Numero_Camadas - 1;
     int linha_escolhida = 0;
 
-    for (i = 0; i < Numero_Camadas; i++, linha_escolhida += 2)
+    for (int j = 0; j < NUMINTEST; j++)
     {
-        C[i].Treinar_Neuronios(Entrada[i], linha_escolhida);
-        C[i].Funcao_Ativacao();
-        C[i].Retornar_Saida(Entrada);                       
+        for (i = 0; i < Numero_Camadas; i++, linha_escolhida += 2)
+        {
+            C[i].Treinar_Neuronios(Entrada[j], 0);
+            C[i].Funcao_Ativacao();
+            C[i].Retornar_Saida(Entrada);
+        }
     }
 
     for (int i = 0; i < C[Camada_Saida].Numero_Neuronios; i++)
@@ -90,8 +94,8 @@ void Rede ::Treinar()
 {
     int i, j, Linha_Escolhida, Iteracoes, Camada_Saida, Marcados[NUMIN];
     int p, q;
-    double Vetor_Saida[NUMNEU][2];
-    double Erros[NUMNEU]; 
+    double Vetor_Saida[NUMNEU][NUMCOLIN];
+    double Erros[1];
     double Somatorio_Erro, Maior;
     long Contador, Dinamico;
     char Sair;
@@ -110,7 +114,6 @@ void Rede ::Treinar()
     do
     {
         Linha_Escolhida = rand() % NUMIN;
-
         j = 0;
         while (Marcados[Linha_Escolhida] == 1)
         {
@@ -126,40 +129,38 @@ void Rede ::Treinar()
         }
 
         // marcar par de linhas escolhidas
-        Contador++;
-
+        ++Contador;
 
         // FEED-FORWARD
         // Treinar neuronios da primeira camada
-        C[0].Treinar_Neuronios(entrada[Linha_Escolhida], Linha_Escolhida);  //OK
-        C[0].Funcao_Ativacao();           //OK
-        C[0].Retornar_Saida(Vetor_Saida); //paraleizado
+        C[0].Treinar_Neuronios(entrada[Linha_Escolhida], Linha_Escolhida); //OK
+        C[0].Funcao_Ativacao();                                            //OK
+        C[0].Retornar_Saida(Vetor_Saida);                                  //paraleizado
 
-        for (i = 1; i < Numero_Camadas-1; i++)
+        for (i = 1; i < Numero_Camadas; i++)
         {
-            C[i].Treinar_Neuronios(Vetor_Saida[Linha_Escolhida], Linha_Escolhida); //paraleizado            
-            C[i].Funcao_Ativacao();              //paraleizado
-            C[i].Retornar_Saida(Vetor_Saida);    //paraleizado
+            C[i].Treinar_Neuronios(Vetor_Saida[Linha_Escolhida], Linha_Escolhida); //paraleizado
+            C[i].Funcao_Ativacao();                                                //paraleizado
+            C[i].Retornar_Saida(Vetor_Saida);                                      //paraleizado
         }
 
         // BACK-PROPAGATION -> OK DUVIDOSO
         /* Ajustando pesos da camada de sa�da */
-        C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, saida, Linha_Escolhida);    //paraleizado
-        C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);             //paraleizado
-        C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida); //paraleizado
+        C[Camada_Saida].Calcular_Erro_Camada_Saida(Erros, saida, Linha_Escolhida); //paraleizado
+        C[Camada_Saida - 1].Retornar_Saida(Vetor_Saida);                           //paraleizado
+        C[Camada_Saida].Ajustar_Pesos_Neuronios(Erros, Vetor_Saida, 0);            //paraleizado
 
         /* Ajustando pesos das camadas intermedi�rias */
         for (i = Camada_Saida - 1; i > 0; i--)
         {
-            C[i].Calcular_Erro_Camada(Erros);             //paraleizado
-            C[i - 1].Retornar_Saida(Vetor_Saida);         //paraleizado
-            C[i].Ajustar_Pesos_Neuronios(Erros, entrada); //paraleizado
+            C[i].Calcular_Erro_Camada(Erros);                              //paraleizado
+            C[i - 1].Retornar_Saida(Vetor_Saida);                          //paraleizado
+            C[i].Ajustar_Pesos_Neuronios(Erros, entrada, Linha_Escolhida); //paraleizado
         }
 
         /* Ajustando pesos da primeira camada */
-        C[0].Calcular_Erro_Camada(Erros);             //paraleizado
-        C[0].Ajustar_Pesos_Neuronios(Erros, entrada); //paraleizado
-
+        C[0].Calcular_Erro_Camada(Erros);                              //paraleizado
+        C[0].Ajustar_Pesos_Neuronios(Erros, entrada, Linha_Escolhida); //paraleizado
         /* Calculando o erro global */
         C[Camada_Saida].Calcular_Erro_Final(Erros, saida); //paraleizado
 
