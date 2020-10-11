@@ -5,10 +5,8 @@ Inspired by https://www.codeproject.com/Articles/1237026/Simple-MLP-Backpropagat
 #### Compilar e executar
 
     $ g++ back.cpp -o back.exe -fopenmp && time ./back.exe
-
-#### Compilar e executar versão otimizada por vetorização
-
-    $ g++ -O3 back.cpp -o back.exe -fopenmp && time ./back.exe
+    
+ Setar C++ na versão 11
 
 #### Sobre a Rede Neural
     
