@@ -30,3 +30,6 @@ Paralelo (8 threads):
   real    0m3,716s
   user    0m0,000s
   sys     0m0,047s
+|                     | 1 thread  | 2 threads | 4 threads | 8 threads |
+| ------------------- | --------- | --------- | --------- | --------- |
+| Tempo               | 0m10,942s | 0m6,033s  | 0m3,779s  | 0m3,716s  |
