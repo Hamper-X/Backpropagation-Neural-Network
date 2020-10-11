@@ -17,6 +17,6 @@ class Neuronio
 		Neuronio();
 		void Inicializar_Neuronio(int Numero_Pesos);                     // Inicia os valores dos pesos
 		void Ajustar_Peso(double Entrada, double Erro, int Indice_Peso); // Ajusta os valores dos pesos
-		double Somatorio(pair<double, double> Entrada);                              // Retorna os pesos e quantos s�o
+		double Somatorio(double *Entrada);// ANTIGO PAR 2 POS. Retorna os pesos e quantos s�o 
 		double Erro_Peso(double Erro, int Indice_Peso);
 };

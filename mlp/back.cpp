@@ -23,8 +23,8 @@ int main()
 
 	time_t inicio, fim;
 
-	vector<pair<double, double>> Entrada;
-	vector<double> Saida;
+	double Entrada [NUMIN][2];
+	double Saida[NUMIN];
 
 	char Continua = 'r';
 	Rede R;
@@ -61,7 +61,8 @@ int main()
 		{
 			cout << "\nEntrada " << i << " : ";
 			cin >> a >> b; 
-			Entrada.push_back(make_pair(a, b));
+			Entrada[i][0] = a;
+			Entrada[i][1] = b;
 		}
 
 		R.Calcular_Resultado(Entrada, Saida);
