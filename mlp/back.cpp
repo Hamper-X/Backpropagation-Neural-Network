@@ -24,7 +24,7 @@ int main()
 	time_t inicio, fim;
 
 	double Entrada [NUMINTEST][NUMCOLIN];
-	double Saida[NUMIN];
+	double Saida[NUMINTEST];
 
 	char Continua = 'r';
 	Rede R;
@@ -67,14 +67,14 @@ int main()
 
 		R.Calcular_Resultado(Entrada, Saida);
 
-		for (i = 1; i <= 3; i++)
+		for (i = 0; i < NUMINTEST; i++)
 		{
 			cout << "\nSaida " << i << " : " << Saida[i];
 		}
 
 		cout << endl;
 		double total = double(fim - inicio);
-		cout << "Tempo de execução: " << fixed << total << " segundos." << endl << endl;
+		cout << "Tempo de execucao: " << fixed << total << " segundos." << endl << endl;
 
 		cout << "\n\nContinua ? (s/n/r)" << endl;
 		cin >> Continua;

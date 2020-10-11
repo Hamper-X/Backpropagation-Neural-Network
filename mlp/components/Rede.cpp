@@ -73,18 +73,19 @@ void Rede ::Calcular_Resultado(double Entrada[][NUMCOLIN], double *Saida)
     int Camada_Saida = Numero_Camadas - 1;
     int linha_escolhida = 0;
 
-    for (int j = 0; j < NUMINTEST; j++)
+    for (j = 0; j < NUMINTEST; j++)
     {
-        for (i = 0; i < Numero_Camadas; i++, linha_escolhida += 2)
+        for (i = 0; i < Numero_Camadas; i++)
         {
             C[i].Treinar_Neuronios(Entrada[j], 0);
             C[i].Funcao_Ativacao();
             C[i].Retornar_Saida(Entrada);
         }
-    }
 
-    for (int i = 0; i < C[Camada_Saida].Numero_Neuronios; i++)
-        Saida[i] = C[Camada_Saida].N[i].Somatorio(Entrada[i]);
+        for(int k = 0; k < C[Camada_Saida].Numero_Neuronios; k++)
+            Saida[j] = C[Camada_Saida].N[k].Somatorio(Entrada[j]);
+    }
+    
 }
 
 /*********************************************************
@@ -203,7 +204,7 @@ void Rede ::Treinar()
         if (Contador % 10000 == 0)
         {
             Utils::gotoxy(1, 10);
-            // limpar_tela();
+            //limpar_tela();
             cout << "\nIteracoes = " << Contador;
             cout << "\n\nBeta = " << Utils::BETA << "  ";
         }
@@ -212,17 +213,10 @@ void Rede ::Treinar()
         if (Contador % ITERACOES == 0) //falta 1 zero
         {
             cout << "\nRede treinada!" << endl;
-            cout << "Pressione 'y' para sair do treinamento ou qualquer outro botão para continuar. " << endl;
-            // cin.clear();
-            // cin.ignore(256, '\n');
+            cout << "Pressione 'y' para sair do treinamento ou qualquer outro botao para continuar. " << endl;            
             cin >> Sair;
             limpar_tela();
             Utils::gotoxy(1, 10);
         }
-
-        // int pao;
-        // cout << "debug" << endl;
-        // cin >> pao;
-
     } while (Iteracoes < NUMITE && Sair != 'y');
 }
