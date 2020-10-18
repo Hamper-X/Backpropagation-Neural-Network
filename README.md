@@ -10,7 +10,7 @@ Inspired by https://www.codeproject.com/Articles/1237026/Simple-MLP-Backpropagat
 
 #### Sobre a Rede Neural
     
-    Esta Rede neural possui três partes (Input Layer, Hidden Layers, Output Layer) e tem como proposito usar da backpropagation de forma de simples para aproximar f(x) = sen(x) usando C++.
+   Esta Rede neural possui três partes (Input Layer, Hidden Layers, Output Layer) e tem como proposito usar da backpropagation de forma simples para aproximar f(x) = sen(x) usando C++.
     
 
 **Tempos paralelos por número de threads (1,2,4,8)**
